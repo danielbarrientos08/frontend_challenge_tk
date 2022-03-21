@@ -11,7 +11,7 @@
           <tr v-for="report in listReports" v-bind:key="report.id">
             <td>{{report.title}}</td>
             <td>{{report.created_at}}</td>
-            <td><a href="#"> Descargar</a> </td>
+            <td><a href="#" @click.prevent="downloadReport(report.id,report.title)"> Descargar</a> </td>
           </tr>
         </tbody>
       </table>
@@ -28,15 +28,15 @@ import ModalComponent    from '@/components/ModalComponent'
 
     data() {
         return {
-          listReports:[]
+          listReports: [],
         }
     },
     created() {
-      
+       this.reportList()
     },
 
     mounted() {
-      this.reportList()
+     
     },
 
     components:{
@@ -46,10 +46,12 @@ import ModalComponent    from '@/components/ModalComponent'
     methods: {
       reportList(){
 
-        this.axios.get(this.$uri+'/api/list-reports')
+        let url = this.$uri+'/api/list-reports'
+
+        this.axios.get(url)
         .then(response => {
             console.log(response.data.response)
-            this.listReports = response.data.response.data 
+            this.listReports = response.data.response 
         })
         .catch(error => {
 
@@ -62,6 +64,36 @@ import ModalComponent    from '@/components/ModalComponent'
       showModal(){
         this.$refs.ModalComponent.showModal(); 
       },
+
+      downloadReport( report_id,report_tilte)
+      {
+        let url = this.$uri+'/api/get-report/'+report_id
+
+        const req = this.axios({
+            method: "get",
+            url:url,
+            responseType: "blob",
+        })
+        .then(response => {
+            console.log('excel '+response.data)
+
+            var my_blob = new Blob(
+              [response.data],
+              {type : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64"}
+            )
+
+            const a_excel = document.createElement("a");
+            a_excel.href = window.URL.createObjectURL(my_blob);
+            a_excel.download = 'Reporte '+report_tilte+'_'+new Date().getTime()+'.xlsx'
+            a_excel.click();
+        })
+        .catch(error => {
+
+        })
+        .finally(() => {
+
+        })
+      }
 
     },
   }
