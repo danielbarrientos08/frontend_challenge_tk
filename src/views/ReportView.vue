@@ -16,11 +16,13 @@
         </tbody>
       </table>
       <hr>
-      <button>Crear Reporte</button>
+      <button @click="showModal">Crear Reporte</button>
   </div>
+    <modal-component ref="ModalComponent" />
 </template>
 <script>
 
+import ModalComponent    from '@/components/ModalComponent'
 
   export default {
 
@@ -38,7 +40,7 @@
     },
 
     components:{
-
+      ModalComponent
     },
 
     methods: {
@@ -55,7 +57,12 @@
         .finally(() => {
 
         })
-      }
+      },
+
+      showModal(){
+        this.$refs.ModalComponent.showModal(); 
+      },
+
     },
   }
 </script>
