@@ -1,8 +1,6 @@
 <template>
-
-    <loading v-model:active="isLoading"
-              :is-full-page="true"
-    />
+     <notifications width="100%" />
+    <loading v-model:active="isLoading" :is-full-page="true"/>
     <vue-final-modal v-model="statusModal"  :hide-overlay="false"  :click-to-close="true"    content-class="modal-dialog"   :esc-to-close="true" >
         <div class="modal-dialog">
             <div class="modal-content">
@@ -14,7 +12,8 @@
                             <div class="col-12">
                                 <div class="mb-3 text-start" >
                                     <label for="exampleFormControlInput1" class="form-label">Descripción del reporte</label>
-                                    <input type="text" class="form-control" v-model="input.title" placeholder="">
+                                    <input type="text" class="form-control" v-model="input.title" placeholder="" required>
+                                    <small v-if="errorMessages.title != '' " v-text="errorMessages.title" class="text-danger"></small>
                                 </div>
                             </div>
                         </div>
@@ -22,39 +21,15 @@
                             <div class="col-6">
                                 <div class="mb-3  text-start">
                                     <label  class="form-label">Fecha inicio</label>
-                                    <v-date-picker class="" v-model="input.start_date">
-                                        <template v-slot="{ inputValue, togglePopover }">
-                                        <div class=" ">
-                                        
-                                            <input
-                                            :value="inputValue"
-                                            class="bg-white form-control"
-                                            readonly
-                                            @click="togglePopover()"
-                                            />
-                                        </div>
-                                        </template>
-                                    </v-date-picker>
+                                    <input type="date" required class="form-control" v-model="input.start_date">
+                                     <small v-if="errorMessages.start_date != '' " v-text="errorMessages.start_date" class="text-danger"></small>
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="mb-3  text-start">
                                     <label class="form-label">Fecha Fin</label>
-                                    
-                                    <v-date-picker class="" v-model="input.end_date">
-                                        <template v-slot="{ inputValue, togglePopover }">
-                                        <div class="">
-                                        
-                                            <input
-                                            :value="inputValue"
-                                            class="bg-white form-control"
-                                            readonly
-                                            placeholder=""
-                                            @click="togglePopover()"
-                                            />
-                                        </div>
-                                        </template>
-                                    </v-date-picker>
+                                    <input type="date" required class="form-control" v-model="input.end_date">
+                                    <small v-if="errorMessages.end_date != '' " v-text="errorMessages.end_date" class="text-danger"></small>
                                 </div>
                             </div>
                         </div>
@@ -74,7 +49,10 @@ import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
+
     name: 'ModalComponent',
+    emits: ["refresh"],
+
     data() {
         return {
             statusModal:false,
@@ -84,7 +62,7 @@ export default {
                 start_date: null,
                 end_date: null
             },
-            error:{
+            errorMessages:{
                 title: null,
                 start_date: null,
                 end_date: null
@@ -103,26 +81,43 @@ export default {
             this.statusModal = false;
         },
 
-        submitData()
+        submitData : function()
         {
             this.isLoading= true
 
             let url = this.$uri+'/api/generate-report'
             let data = this.input
-
+        
             this.axios.post(url,data)
             .then(response => {
-                console.log(response.data.response)
-               
-            })
-            .catch(error => {
-                console.log(error);
+                this.$notify({ type: "info", title:"Mensaje", text: "El reporte se esta generando." });
+            }).catch(error => {
+                
+                if(error.response.status == 422){
+                    let errors = error.response.data.errors
+                 
+                    this.setValidationMessages(errors);
+                }
             })
             .finally(() => {
                 this.isLoading= false
             })
         },
+        setValidationMessages(errors)
+        {
+            console.log('asignando valores');
+            // limpiar mensajes
+            for( const index in this.errorMessages){
+                this.errorMessages[index] = ''
+            }
+            //asignar nuevos mensajes
+            for (const index in errors) {
+                this.errorMessages[index] = errors[index][0]
+            }
+        },
     },
+
+ 
 }
 </script>
     

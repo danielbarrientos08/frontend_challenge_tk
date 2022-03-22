@@ -8,6 +8,8 @@ import VueFinalModal from 'vue-final-modal'
 import VCalendar from 'v-calendar';
 import 'v-calendar/dist/style.css';
 
+import Notifications from '@kyvg/vue3-notification'
+
 const app = createApp(App)
 
 app.use(Store)
@@ -15,6 +17,7 @@ app.use(Router)
 app.use(VueAxios, axios)
 app.use(VueFinalModal)
 app.use(VCalendar, {})
+app.use(Notifications)
 app.mount('#app')
 //variables globales
 const uri ={
