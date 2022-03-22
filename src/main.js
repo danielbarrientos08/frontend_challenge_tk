@@ -28,4 +28,4 @@ const uri ={
 //Nombre de la app
 app.config.globalProperties.$app_name = 'Tkambio'
 //Uri 
-app.config.globalProperties.$uri = uri.local
+app.config.globalProperties.$uri = uri.production

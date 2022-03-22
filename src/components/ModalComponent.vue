@@ -90,6 +90,7 @@ export default {
         
             this.axios.post(url,data)
             .then(response => {
+                this.resetInputs()
                 this.$notify({ type: "info", title:"Mensaje", text: "El reporte se esta generando." });
             }).catch(error => {
                 
@@ -115,6 +116,19 @@ export default {
                 this.errorMessages[index] = errors[index][0]
             }
         },
+
+        resetInputs()
+        {
+            //limpiar mensajes
+            for( const index in this.errorMessages){
+                this.errorMessages[index] = ''
+            }
+
+            this.input.title      = '',
+            this.input.start_date = '',
+            this.input.end_date   = ''
+          
+        }
     },
 
  
