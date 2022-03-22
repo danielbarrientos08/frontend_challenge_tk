@@ -91,8 +91,8 @@ import 'vue-loading-overlay/dist/vue-loading.css';
             url:url,
             responseType: "blob",
         })
-        .then(response => {
-            console.log('excel '+response.data)
+        .then(response => 
+        {
 
             var my_blob = new Blob(
               [response.data],

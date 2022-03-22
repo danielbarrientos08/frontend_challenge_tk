@@ -106,7 +106,6 @@ export default {
         },
         setValidationMessages(errors)
         {
-            console.log('asignando valores');
             // limpiar mensajes
             for( const index in this.errorMessages){
                 this.errorMessages[index] = ''
