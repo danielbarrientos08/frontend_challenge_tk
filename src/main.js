@@ -6,7 +6,6 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueFinalModal from 'vue-final-modal'
 import VCalendar from 'v-calendar';
-
 import 'v-calendar/dist/style.css';
 
 const app = createApp(App)
@@ -19,7 +18,8 @@ app.use(VCalendar, {})
 app.mount('#app')
 //variables globales
 const uri ={
-    local : 'http://localhost:8000'
+    local : 'http://localhost:8000',
+    production : 'https://tkambio.rumisofperu.com',
 }
 
 //Nombre de la app

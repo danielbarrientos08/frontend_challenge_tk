@@ -1,4 +1,8 @@
 <template>
+
+    <loading v-model:active="isLoading"
+              :is-full-page="true"
+    />
     <vue-final-modal v-model="statusModal"  :hide-overlay="false"  :click-to-close="true"    content-class="modal-dialog"   :esc-to-close="true" >
         <div class="modal-dialog">
             <div class="modal-content">
@@ -65,11 +69,16 @@
 </template>
 
 <script>
+
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
+
 export default {
     name: 'ModalComponent',
     data() {
         return {
             statusModal:false,
+            isLoading: false,
             input : {
                 title: null,
                 start_date: null,
@@ -82,6 +91,9 @@ export default {
             }
         }
     },
+    components:{
+        Loading
+    },
     methods: {
         showModal(){
             this.statusModal = true;
@@ -91,7 +103,9 @@ export default {
             this.statusModal = false;
         },
 
-        submitData(){
+        submitData()
+        {
+            this.isLoading= true
 
             let url = this.$uri+'/api/generate-report'
             let data = this.input
@@ -105,9 +119,9 @@ export default {
                 console.log(error);
             })
             .finally(() => {
-
+                this.isLoading= false
             })
-      },
+        },
     },
 }
 </script>

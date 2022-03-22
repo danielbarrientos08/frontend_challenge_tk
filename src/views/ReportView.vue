@@ -1,5 +1,9 @@
 <template>
-  <div class="about">
+  <div>
+ 
+    <loading v-model:active="isLoading"
+              :is-full-page="true"
+    />
     <h1>Generador de reportes TK</h1>
       <table>
         <thead>
@@ -22,30 +26,40 @@
 </template>
 <script>
 
-import ModalComponent    from '@/components/ModalComponent'
+import ModalComponent    from '@/components/ModalComponent'   
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
   export default {
 
     data() {
         return {
           listReports: [],
+          isLoading: false,
+      
+      
         }
     },
     created() {
+    
        this.reportList()
     },
 
     mounted() {
-     
+      
     },
 
     components:{
-      ModalComponent
+      ModalComponent,
+      Loading
+      
     },
 
     methods: {
-      reportList(){
-
+      reportList()
+      {
+       
+         this.isLoading = true;
         let url = this.$uri+'/api/list-reports'
 
         this.axios.get(url)
@@ -57,7 +71,7 @@ import ModalComponent    from '@/components/ModalComponent'
 
         })
         .finally(() => {
-
+            this.isLoading = false;
         })
       },
 
@@ -67,6 +81,8 @@ import ModalComponent    from '@/components/ModalComponent'
 
       downloadReport( report_id,report_tilte)
       {
+        this.isLoading = true;
+
         let url = this.$uri+'/api/get-report/'+report_id
 
         const req = this.axios({
@@ -88,10 +104,12 @@ import ModalComponent    from '@/components/ModalComponent'
             a_excel.click();
         })
         .catch(error => {
-
+           if(error.response.status == 404){
+             alert('Este reporte aún se esta procesando. ')
+           }
         })
         .finally(() => {
-
+            this.isLoading= false
         })
       }
 
